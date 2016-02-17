@@ -8,7 +8,7 @@
     "version": "2.0.0",
     "require": {
         "pomm-project/pomm-bundle": "~2.0",
-        "friendsofsymfony/user-bundle": "~2.0@dev"
+        "friendsofsymfony/user-bundle": "dev-master"
     },
     "autoload": {
         "psr-4": {
