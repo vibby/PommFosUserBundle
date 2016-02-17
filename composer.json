@@ -7,8 +7,7 @@
     "authors": [ { "name": "Florian FERRIERE", "email": "ferriere.florian@gmail.com" }],
     "version": "2.0.0",
     "require": {
-        "pomm-project/pomm-bundle": "~2.0",
-        "friendsofsymfony/user-bundle": "dev-master@dev"
+        "pomm-project/pomm-bundle": "~2.0"
     },
     "autoload": {
         "psr-4": {
