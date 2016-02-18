@@ -4,13 +4,14 @@ namespace Fferriere\PommProjectFosUserBundle\Manager;
 
 use FOS\UserBundle\Model\UserManager as BaseUserManager;
 use FOS\UserBundle\Model\UserInterface;
-use Fferriere\PommProjectFosUserBundle\Model\WriteModel;
+use PommProject\ModelManager\Model\Model;
 use Fferriere\PommProjectFosUserBundle\Exception\Exception;
 use FOS\UserBundle\Util\CanonicalizerInterface;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Fferriere\PommProjectFosUserBundle\Entity\UserEntity;
 use PommProject\Foundation\Inflector;
 use PommProject\Foundation\Where;
+use Fferriere\PommProjectFosUserBundle\Manager\AdvancedUserManagerInterface;
 
 /**
  * Description of UserManager
@@ -29,7 +30,8 @@ class UserManager extends BaseUserManager implements AdvancedUserManagerInterfac
             EncoderFactoryInterface $encoderFactory,
             CanonicalizerInterface $usernameCanonicalizer,
             CanonicalizerInterface $emailCanonicalizer,
-            WriteModel $model
+            Model $model,
+            $pommModelManager
     ) {
         parent::__construct(
             $encoderFactory,
@@ -37,6 +39,7 @@ class UserManager extends BaseUserManager implements AdvancedUserManagerInterfac
             $emailCanonicalizer
         );
         $this->model = $model;
+        $this->pommModel = $pommModelManager->getModel();
     }
 
     public function createUser()
@@ -52,8 +55,8 @@ class UserManager extends BaseUserManager implements AdvancedUserManagerInterfac
      */
     protected function checkUser(UserInterface $user)
     {
-        if (! $user instanceof UserEntity) {
-            throw new Exception('user instance is not an instance of \Fferriere\PommProjectFosUserBundle\Entity\UserEntity');
+        if (! $user instanceof User) {
+            throw new Exception('user instance is not an instance of \Fferriere\PommProjectFosUserBundle\Model\User');
         }
         return $this->model;
     }
@@ -67,7 +70,7 @@ class UserManager extends BaseUserManager implements AdvancedUserManagerInterfac
     public function findUserBy(array $criteria)
     {
         $where = $this->createWhereByCriteria($criteria);
-        $result = $this->model->findWhere($where);
+        $result = $this->pommModel->findWhere($where);
         if ($result->count() > 0) {
             return $result->current();
         }
@@ -76,7 +79,7 @@ class UserManager extends BaseUserManager implements AdvancedUserManagerInterfac
 
     public function findUsers()
     {
-        $this->model->findAll();
+        $this->pommModel->findAll();
     }
 
     public function getClass()
@@ -101,7 +104,8 @@ class UserManager extends BaseUserManager implements AdvancedUserManagerInterfac
         return $this->model->saveOne($user);
     }
 
-    protected function getPrimaryKeyValues(UserEntity $user) {
+    protected function getPrimaryKeyValues(UserEntity $user)
+    {
         $colnames = $this->model->getStructure()->getPrimaryKey();
         $values = array();
         for($i = 0, $size = count($colnames); $i < $size; $i++) {

@@ -2,47 +2,35 @@
 
 namespace Fferriere\PommProjectFosUserBundle\Model;
 
-use PommProject\ModelManager\Model\RowStructure;
+use PommProject\ModelManager\Model\Model;
+use PommProject\ModelManager\Model\Projection;
+use PommProject\ModelManager\Model\ModelTrait\WriteQueries;
+
+use PommProject\Foundation\Where;
+
+use Fferriere\PommProjectFosUserBundle\Model\UserStructure;
 
 /**
- * Description of UserModel
+ * MemberModel
  *
- * @author florian
+ * Model class for table member.
+ *
+ * @see Model
  */
-class UserModel extends WriteModel
+class UserModel extends Model
 {
+    use WriteQueries;
 
-    protected $tableName;
-
-    public function __construct($tableName)
+    /**
+     * __construct()
+     *
+     * Model constructor
+     *
+     * @access public
+     */
+    public function __construct()
     {
-        $this->tableName = $tableName;
-        parent::__construct();
+        $this->structure = new UserStructure();
+        $this->flexible_entity_class = '\Fferriere\PommProjectFosUserBundle\Model\User';
     }
-
-    protected function initStructure()
-    {
-        $this->structure = (new RowStructure())
-                ->setRelation($this->tableName)
-                ->addField('id', 'int4')
-                ->addField('username', 'varchar')
-                ->addField('username_canonical', 'varchar')
-                ->addField('email', 'varchar')
-                ->addField('email_canonical', 'varchar')
-                ->addField('enabled', 'bool')
-                ->addField('salt', 'varchar')
-                ->addField('password', 'varchar')
-                ->addField('last_login', 'timestamp')
-                ->addField('locked', 'bool')
-                ->addField('expired', 'bool')
-                ->addField('expires_at', 'timestamp')
-                ->addField('confirmation_token', 'varchar')
-                ->addField('password_requested_at', 'timestamp')
-                ->addField('roles', 'text')
-                ->addField('credentials_expired', 'bool')
-                ->addField('credentials_expire_at', 'timestamp')
-                ->setPrimaryKey([ 'id' ]);
-        $this->flexible_entity_class = 'Fferriere\PommProjectFosUserBundle\Entity\UserEntity';
-    }
-
 }
