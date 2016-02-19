@@ -14,7 +14,7 @@ services:
             - "@pomm_fos_user_bundle.user_model"
             - "@pomm_fos_user_bundle.model_manager"
     pomm_fos_user_bundle.model_manager:
-        class: Fferriere\PommProjectFosUserBundle\Model\UserModelManager
+        class: Fferriere\PommProjectFosUserBundle\Manager\UserModelManager
         arguments:
             - "@pomm"
             - %pomm_fos_user.connection_name%

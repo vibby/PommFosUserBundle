@@ -1,6 +1,6 @@
 <?php
 
-namespace Fferriere\PommProjectFosUserBundle\Model;
+namespace Fferriere\PommProjectFosUserBundle\Manager;
 
 /**
  * MemberModel

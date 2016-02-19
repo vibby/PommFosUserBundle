@@ -20,6 +20,8 @@ use FOS\UserBundle\Model\UserInterface;
  */
 class User extends FlexibleEntity implements UserInterface
 {
+    protected $plainPassword;
+
     /**
      * Returns the user unique id.
      *
@@ -27,7 +29,7 @@ class User extends FlexibleEntity implements UserInterface
      */
     public function getId()
     {
-        return $this['id'];
+        return $this->get('id');
     }
 
     /**
@@ -39,8 +41,7 @@ class User extends FlexibleEntity implements UserInterface
      */
     public function setUsername($username)
     {
-        $this['username'] = $username;
-        return $this;
+        $this->set('username', $username);
     }
 
     /**
@@ -50,7 +51,7 @@ class User extends FlexibleEntity implements UserInterface
      */
     public function getUsernameCanonical()
     {
-        return $this['username_canonical'];
+        return $this->get('username_canonical');
     }
 
     /**
@@ -62,8 +63,7 @@ class User extends FlexibleEntity implements UserInterface
      */
     public function setUsernameCanonical($usernameCanonical)
     {
-        $this['username_canonical'] = $usernameCanonical;
-        return $this;
+        $this->set('username_canonical', $usernameCanonical);
     }
 
     /**
@@ -73,7 +73,7 @@ class User extends FlexibleEntity implements UserInterface
      */
     public function getEmail()
     {
-        return $this['email'];
+        return $this->get('email');
     }
 
     /**
@@ -85,8 +85,7 @@ class User extends FlexibleEntity implements UserInterface
      */
     public function setEmail($email)
     {
-        $this['email'] = $email;
-        return $this;
+        $this->set('email', $email);
     }
 
     /**
@@ -96,7 +95,7 @@ class User extends FlexibleEntity implements UserInterface
      */
     public function getEmailCanonical()
     {
-        return $this['email_canonical'];
+        return $this->get('email_canonical');
     }
 
     /**
@@ -108,31 +107,7 @@ class User extends FlexibleEntity implements UserInterface
      */
     public function setEmailCanonical($emailCanonical)
     {
-        $this['email_canonical'] = $emailCanonical;
-        return $this;
-    }
-
-    /**
-     * Gets the plain password.
-     *
-     * @return string
-     */
-    public function getPlainPassword()
-    {
-        return $this['plain_password'];
-    }
-
-    /**
-     * Sets the plain password.
-     *
-     * @param string $password
-     *
-     * @return self
-     */
-    public function setPlainPassword($password)
-    {
-        $this['plain_password'] = $password;
-        return $this;
+        $this->set('email_canonical', $emailCanonical);
     }
 
     /**
@@ -144,8 +119,7 @@ class User extends FlexibleEntity implements UserInterface
      */
     public function setPassword($password)
     {
-        $this['Password'] = $password;
-        return $this;
+        $this->set('Password', $password);
     }
 
     /**
@@ -155,7 +129,7 @@ class User extends FlexibleEntity implements UserInterface
      */
     public function isSuperAdmin()
     {
-        return $this['super_admin'];
+        return $this->get('super_admin');
     }
 
     /**
@@ -165,8 +139,7 @@ class User extends FlexibleEntity implements UserInterface
      */
     public function setEnabled($boolean)
     {
-        $this['enabled'] = $boolean;
-        return $this;
+        $this->set('enabled', $boolean);
     }
 
     /**
@@ -178,8 +151,7 @@ class User extends FlexibleEntity implements UserInterface
      */
     public function setLocked($boolean)
     {
-        $this['locked'] = $boolean;
-        return $this;
+        $this->set('locked', $boolean);
     }
 
     /**
@@ -191,8 +163,7 @@ class User extends FlexibleEntity implements UserInterface
      */
     public function setSuperAdmin($boolean)
     {
-        $this['super_admin'] = $boolean;
-        return $this;
+        $this->set('super_admin', $boolean);
     }
 
     /**
@@ -202,7 +173,7 @@ class User extends FlexibleEntity implements UserInterface
      */
     public function getConfirmationToken()
     {
-        return $this['confirmation_token'];
+        return $this->get('confirmation_token');
     }
 
     /**
@@ -214,8 +185,7 @@ class User extends FlexibleEntity implements UserInterface
      */
     public function setConfirmationToken($confirmationToken)
     {
-        $this['confirmation_token'] = $confirmationToken;
-        return $this;
+        $this->set('confirmation_token', $confirmationToken);
     }
 
     /**
@@ -227,8 +197,7 @@ class User extends FlexibleEntity implements UserInterface
      */
     public function setPasswordRequestedAt(\DateTime $date = null)
     {
-        $this['password_requested_at'] = $date;
-        return $this;
+        $this->set('password_requested_at', $date);
     }
 
     /**
@@ -252,8 +221,7 @@ class User extends FlexibleEntity implements UserInterface
      */
     public function setLastLogin(\DateTime $time = null)
     {
-        $this['last_login'] = $time;
-        return $this;
+        $this->set('last_login', $time);
     }
 
     /**
@@ -270,23 +238,21 @@ class User extends FlexibleEntity implements UserInterface
      */
     public function hasRole($role)
     {
-        return array_search($role, $this['roles']);
+        return array_search($role, $this->get('roles'));
     }
 
     /**
      * Sets the roles of the user.
      *
      * This overwrites any previous roles.
-     *        return $this;
-
+     *
      * @param array $roles
      *
      * @return self
      */
     public function setRoles(array $roles)
     {
-        $this['roles'] = $roles;
-        return $this;
+        $this->set('roles', $roles);
     }
 
     /**
@@ -299,9 +265,8 @@ class User extends FlexibleEntity implements UserInterface
     public function addRole($role)
     {
         if (!$this->hasRole($role)) {
-            $this['roles'][] = $role;
+            $this->set('roles', array_merge($this->get('roles'),[$role]));
         }
-        return $this;
     }
 
     /**
@@ -314,9 +279,8 @@ class User extends FlexibleEntity implements UserInterface
     public function removeRole($role)
     {
         if ($this->hasRole($role)) {
-            $this['roles'] = array_values(array_diff($this['roles'],[$role]));
+            $this->set('roles', array_values(array_diff($this-get('roles'),[$role])));
         }
-        return $this;
     }
 
     /**
@@ -412,9 +376,16 @@ class User extends FlexibleEntity implements UserInterface
      */
     public function eraseCredentials()
     {
-        return;
+        $this->plainPassword = null;
     }
 
+    public function getPlainPassword() {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword($password) {
+        $this->plainPassword = $password;
+    }
 
     public function unserialize($serialized) {
         $data = unserialize($serialized);

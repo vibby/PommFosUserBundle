@@ -12,6 +12,7 @@ use Fferriere\PommProjectFosUserBundle\Entity\UserEntity;
 use PommProject\Foundation\Inflector;
 use PommProject\Foundation\Where;
 use Fferriere\PommProjectFosUserBundle\Manager\AdvancedUserManagerInterface;
+use Fferriere\PommProjectFosUserBundle\Model\User;
 
 /**
  * Description of UserManager
@@ -98,7 +99,7 @@ class UserManager extends BaseUserManager implements AdvancedUserManagerInterfac
     public function updateUser(UserInterface $user)
     {
         $this->checkUser($user);
-        $user->updateRoles();
+        // $user->updateRoles();
         $this->updateCanonicalFields($user);
         $this->updatePassword($user);
         return $this->model->saveOne($user);
