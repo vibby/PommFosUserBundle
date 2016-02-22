@@ -1,25 +1,23 @@
 <?php
 
-namespace Fferriere\PommProjectFosUserBundle\Manager;
+namespace Vibby\PommProjectFosUserBundle\Manager;
 
 use FOS\UserBundle\Model\UserManager as BaseUserManager;
 use FOS\UserBundle\Model\UserInterface;
-use PommProject\ModelManager\Model\Model;
-use Fferriere\PommProjectFosUserBundle\Exception\Exception;
+use Vibby\PommProjectFosUserBundle\Exception\Exception;
 use FOS\UserBundle\Util\CanonicalizerInterface;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
-use Fferriere\PommProjectFosUserBundle\Entity\UserEntity;
+use Vibby\PommProjectFosUserBundle\Entity\UserEntity;
 use PommProject\Foundation\Inflector;
 use PommProject\Foundation\Where;
-use Fferriere\PommProjectFosUserBundle\Manager\AdvancedUserManagerInterface;
-use Fferriere\PommProjectFosUserBundle\Model\User;
+use Vibby\PommProjectFosUserBundle\Model\User;
 
 /**
  * Description of UserManager
  *
  * @author florian
  */
-class UserManager extends BaseUserManager implements AdvancedUserManagerInterface
+class UserManager extends BaseUserManager
 {
 
     /**
@@ -31,7 +29,6 @@ class UserManager extends BaseUserManager implements AdvancedUserManagerInterfac
             EncoderFactoryInterface $encoderFactory,
             CanonicalizerInterface $usernameCanonicalizer,
             CanonicalizerInterface $emailCanonicalizer,
-            Model $model,
             $pommModelManager
     ) {
         parent::__construct(
@@ -39,7 +36,6 @@ class UserManager extends BaseUserManager implements AdvancedUserManagerInterfac
             $usernameCanonicalizer,
             $emailCanonicalizer
         );
-        $this->model = $model;
         $this->pommModel = $pommModelManager->getModel();
     }
 
@@ -54,12 +50,9 @@ class UserManager extends BaseUserManager implements AdvancedUserManagerInterfac
      * @return WriteModel the model
      * @throws Exception throwed if $user is not a good instance
      */
-    protected function checkUser(UserInterface $user)
+    protected function checkUser(User $user)
     {
-        if (! $user instanceof User) {
-            throw new Exception('user instance is not an instance of \Fferriere\PommProjectFosUserBundle\Model\User');
-        }
-        return $this->model;
+        return $this->pommModel;
     }
 
     public function deleteUser(UserInterface $user)
@@ -85,7 +78,7 @@ class UserManager extends BaseUserManager implements AdvancedUserManagerInterfac
 
     public function getClass()
     {
-        return $this->model->getFlexibleEntityClass();
+        return trim($this->pommModel->getFlexibleEntityClass(), '\\');
     }
 
     public function reloadUser(UserInterface $user)
@@ -102,12 +95,12 @@ class UserManager extends BaseUserManager implements AdvancedUserManagerInterfac
         // $user->updateRoles();
         $this->updateCanonicalFields($user);
         $this->updatePassword($user);
-        return $this->model->saveOne($user);
+        return $this->pommModel->updateOne($user, ['password', 'username_canonical', 'email_canonical']);
     }
 
     protected function getPrimaryKeyValues(UserEntity $user)
     {
-        $colnames = $this->model->getStructure()->getPrimaryKey();
+        $colnames = $this->pommModel->getStructure()->getPrimaryKey();
         $values = array();
         for($i = 0, $size = count($colnames); $i < $size; $i++) {
             $colname = $colnames[$i];
@@ -127,32 +120,4 @@ class UserManager extends BaseUserManager implements AdvancedUserManagerInterfac
         }
         return $where;
     }
-
-    /**
-     * @inheritDoc
-     */
-    public function existsUsernameForOtherUser($username, $userId = null)
-    {
-        $username = $this->canonicalizeUsername($username);
-        $where = new Where('username_canonical = $*', [ $username ]);
-        if ($userId) {
-            $where->andWhere('id != $*', [ $userId ]);
-        }
-        return $this->model->existWhere($where);
-    }
-
-
-    /**
-     * @inheritDoc
-     */
-    public function existsEmailForOtherUser($email, $userId = null)
-    {
-        $email = $this->canonicalizeEmail($email);
-        $where = new Where('email_canonical = $*', [ $email ]);
-        if ($userId) {
-            $where->andWhere('id != $*', [ $userId ]);
-        }
-        return $this->model->existWhere($where);
-    }
-
 }

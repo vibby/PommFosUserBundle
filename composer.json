@@ -1,13 +1,14 @@
 {
     "name": "vibby/pomm-project-fos-user-bundle",
     "type": "library",
-    "description": "FosUserBundle manager for Pomm",
+    "description": "FosUserBundle manager for Pomm 2.x. From an idea of Fferriere",
     "keywords": ["pomm", "fos user bundle"],
     "license": "MIT",
-    "authors": [ { "name": "Florian FERRIERE", "email": "ferriere.florian@gmail.com" }],
+    "authors": [ { "name": "vibby" }],
     "version": "2.0.0",
     "require": {
-        "pomm-project/pomm-bundle": "~2.0"
+        "pomm-project/pomm-bundle": "~2.0",
+        "friendsofsymfony/user-bundle": "~2.0@dev"
     },
     "autoload": {
         "psr-4": {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Fferriere\PommProjectFosUserBundle\DependencyInjection;
+namespace Vibby\PommProjectFosUserBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;

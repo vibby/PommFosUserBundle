@@ -1,6 +1,6 @@
 <?php
 
-namespace Fferriere\PommProjectFosUserBundle\Model;
+namespace Vibby\PommProjectFosUserBundle\Model;
 
 use PommProject\ModelManager\Model\FlexibleEntity;
 use FOS\UserBundle\Model\UserInterface;
@@ -119,7 +119,7 @@ class User extends FlexibleEntity implements UserInterface
      */
     public function setPassword($password)
     {
-        $this->set('Password', $password);
+        $this->set('password', $password);
     }
 
     /**
@@ -398,22 +398,16 @@ class User extends FlexibleEntity implements UserInterface
             $salt,
             $usernameCanonical,
             $username,
-            $expired,
-            $locked,
-            $credentialsExpired,
             $enabled,
             $id
         ) = $data;
 
-        $this->setPassword($password)
-            ->setSalt($salt)
-            ->setUsernameCanonical($usernameCanonical)
-            ->setUsername($username)
-            ->setExpired($expired)
-            ->setLocked($locked)
-            ->setCredentialsExpired($credentialsExpired)
-            ->setEnabled($enabled)
-            ->setId($id);
+        $this->setPassword($password);
+        $this->setSalt($salt);
+        $this->setUsernameCanonical($usernameCanonical);
+        $this->setUsername($username);
+        $this->setEnabled($enabled);
+        $this->setId($id);;
     }
 
     public function serialize() {
@@ -422,9 +416,6 @@ class User extends FlexibleEntity implements UserInterface
             $this->getSalt(),
             $this->getUsernameCanonical(),
             $this->getUsername(),
-            $this->isExpired(),
-            $this->isLocked(),
-            $this->isCredentialsExpired(),
             $this->isEnabled(),
             $this->getId(),
         ));

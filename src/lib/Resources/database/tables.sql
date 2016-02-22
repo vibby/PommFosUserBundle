@@ -13,7 +13,7 @@ CREATE TABLE fos_user (
     expires_at TIMESTAMP WITHOUT TIME ZONE,
     confirmation_token VARCHAR(255),
     password_requested_at TIMESTAMP WITHOUT TIME ZONE,
-    roles TEXT NOT NULL,
+    roles TEXT[] NOT NULL,
     credentials_expired BOOLEAN NOT NULL DEFAULT FALSE,
     credentials_expire_at TIMESTAMP WITHOUT TIME ZONE
 );

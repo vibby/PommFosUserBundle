@@ -1,20 +1,19 @@
 parameters:
     pomm_fos_user.connection_name: 'default'
-    pomm_fos_user.user_model_class: Fferriere\PommProjectFosUserBundle\Model\UserModel
+    pomm_fos_user.user_model_class: Vibby\PommProjectFosUserBundle\Model\UserModel
 
 services:
     pomm_fos_user_bundle.user_model:
         class: %pomm_fos_user.user_model_class%
     pomm_fos_user_bundle.user_manager:
-        class: Fferriere\PommProjectFosUserBundle\Manager\UserManager
+        class: Vibby\PommProjectFosUserBundle\Manager\UserManager
         arguments:
             - "@security.encoder_factory"
             - "@fos_user.util.username_canonicalizer"
             - "@fos_user.util.email_canonicalizer"
-            - "@pomm_fos_user_bundle.user_model"
             - "@pomm_fos_user_bundle.model_manager"
     pomm_fos_user_bundle.model_manager:
-        class: Fferriere\PommProjectFosUserBundle\Manager\UserModelManager
+        class: Vibby\PommProjectFosUserBundle\Manager\UserModelManager
         arguments:
             - "@pomm"
             - %pomm_fos_user.connection_name%
