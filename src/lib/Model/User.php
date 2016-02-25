@@ -22,6 +22,15 @@ class User extends FlexibleEntity implements UserInterface
 {
     protected $plainPassword;
 
+    public function __construct(array $values = null)
+    {
+        parent::__construct($values);
+        if (!$this->has('id')) {
+            $this->set('salt', base_convert(sha1(uniqid(mt_rand(), true)), 16, 36));
+            $this->setRoles([]);
+        }
+    }
+
     /**
      * Returns the user unique id.
      *
@@ -236,9 +245,13 @@ class User extends FlexibleEntity implements UserInterface
      *
      * @return boolean
      */
-    public function hasRole($role)
+    public function hasRole($role = null)
     {
-        return array_search($role, $this->get('roles'));
+        try {
+            return array_search($role, $this->get('roles'));
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     /**
@@ -284,7 +297,7 @@ class User extends FlexibleEntity implements UserInterface
     }
 
     /**
-     * @inherit
+     * @inheritdoc
      *
      * @return bool true if the user's account is non expired, false otherwise
      *
@@ -296,7 +309,7 @@ class User extends FlexibleEntity implements UserInterface
     }
 
     /**
-     * @inherit
+     * @inheritdoc
      *
      * @return bool true if the user is not locked, false otherwise
      *
@@ -308,7 +321,7 @@ class User extends FlexibleEntity implements UserInterface
     }
 
     /**
-     * @inherit
+     * @inheritdoc
      *
      * @return bool true if the user's credentials are non expired, false otherwise
      *
@@ -320,7 +333,7 @@ class User extends FlexibleEntity implements UserInterface
     }
 
     /**
-     * @inherit
+     * @inheritdoc
      *
      * @return bool true if the user is enabled, false otherwise
      *
@@ -332,7 +345,7 @@ class User extends FlexibleEntity implements UserInterface
     }
 
     /**
-     * @inherit
+     * @inheritdoc
      *
      * @return (Role|string)[] The user roles
      */
@@ -342,7 +355,7 @@ class User extends FlexibleEntity implements UserInterface
     }
 
     /**
-     * @inherit
+     * @inheritdoc
      *
      * @return string The password
      */
@@ -352,7 +365,7 @@ class User extends FlexibleEntity implements UserInterface
     }
 
     /**
-     * @inherit
+     * @inheritdoc
      *
      * @return string|null The salt
      */
@@ -362,7 +375,17 @@ class User extends FlexibleEntity implements UserInterface
     }
 
     /**
-     * @inherit
+     * @inheritdoc
+     *
+     * @return string|null The salt
+     */
+    public function setSalt($salt)
+    {
+        $this->set('salt', $salt);
+    }
+
+    /**
+     * @inheritdoc
      *
      * @return string The username
      */
@@ -372,7 +395,7 @@ class User extends FlexibleEntity implements UserInterface
     }
 
     /**
-     * @inherit
+     * @inheritdoc
      */
     public function eraseCredentials()
     {

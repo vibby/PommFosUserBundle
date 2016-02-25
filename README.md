@@ -37,3 +37,4 @@ And that's all.
 ## Overriding
 
 It's possible to inherit `Vibby\PommProjectFosUserBundle\Model\User` on your own bundle to override this model.
+See an example of implementation here

@@ -23,7 +23,7 @@ class UserManager extends BaseUserManager
     /**
      * @var WriteModel
      */
-    protected $model;
+    protected $pommModel;
 
     public function __construct(
             EncoderFactoryInterface $encoderFactory,
@@ -41,7 +41,10 @@ class UserManager extends BaseUserManager
 
     public function createUser()
     {
-        return $this->model->createEntity();
+        $user = $this->pommModel->createEntity();
+        $user->setEmail(null);
+        $user->setUsername(null);
+        return $user;
     }
 
     /**
@@ -84,18 +87,25 @@ class UserManager extends BaseUserManager
     public function reloadUser(UserInterface $user)
     {
         return $this->checkUser($user)
-                    ->findByPK(
-                        $this->getPrimaryKeyValues($user)
-                    );
+            ->findByPK(
+                $this->getPrimaryKeyValues($user)
+            );
     }
 
     public function updateUser(UserInterface $user)
     {
         $this->checkUser($user);
-        // $user->updateRoles();
-        $this->updateCanonicalFields($user);
-        $this->updatePassword($user);
-        return $this->pommModel->updateOne($user, ['password', 'username_canonical', 'email_canonical']);
+        if ($user->has('id')) {
+            $result = $this->pommModel->updateOne($user, ['password', 'username_canonical', 'email_canonical']);
+        } else {
+            $this->updateCanonicalFields($user);
+            $this->updatePassword($user);
+            $user = $this->pommModel->fillRequiredFields($user);
+            dump($user);
+            $result = $this->pommModel->insertOne($user);
+            $result = true;
+        }
+        return $result;
     }
 
     protected function getPrimaryKeyValues(UserEntity $user)
