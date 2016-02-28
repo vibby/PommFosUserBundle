@@ -19,6 +19,7 @@ use Vibby\PommProjectFosUserBundle\Model\User;
  */
 class UserManager extends BaseUserManager
 {
+    private $user;
 
     /**
      * @var WriteModel
@@ -92,20 +93,21 @@ class UserManager extends BaseUserManager
             );
     }
 
-    public function updateUser(UserInterface $user)
+    public function updateUser(UserInterface $user, $insertInDb = false)
     {
-        $this->checkUser($user);
+        if ($this->user) {
+            $user->setPassword($this->user->getPassword());
+            $user->setId($this->user->get('id'));
+            $this->updateCanonicalFields($user);
+        }
         if ($user->has('id')) {
-            $result = $this->pommModel->updateOne($user, ['password', 'username_canonical', 'email_canonical']);
+            $result = $this->pommModel->updateOne($user, ['salt', 'password', 'username_canonical', 'email_canonical']);
         } else {
             $this->updateCanonicalFields($user);
             $this->updatePassword($user);
-            $user = $this->pommModel->fillRequiredFields($user);
-            dump($user);
-            $result = $this->pommModel->insertOne($user);
-            $result = true;
+            $this->pommModel->insertOne($user);
+            $this->user = $user;
         }
-        return $result;
     }
 
     protected function getPrimaryKeyValues(UserEntity $user)

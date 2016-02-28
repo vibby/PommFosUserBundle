@@ -27,7 +27,7 @@ class User extends FlexibleEntity implements UserInterface
         parent::__construct($values);
         if (!$this->has('id')) {
             $this->set('salt', base_convert(sha1(uniqid(mt_rand(), true)), 16, 36));
-            $this->setRoles([]);
+            $this->setRoles(['ROLE_ACCOUNT']);
         }
     }
 
@@ -117,6 +117,16 @@ class User extends FlexibleEntity implements UserInterface
     public function setEmailCanonical($emailCanonical)
     {
         $this->set('email_canonical', $emailCanonical);
+    }
+
+    /**
+     * @inheritdoc
+     *
+     * @return string The password
+     */
+    public function getPassword()
+    {
+        return $this->has('password') ? $this->get('password') : '';
     }
 
     /**
@@ -357,16 +367,6 @@ class User extends FlexibleEntity implements UserInterface
     /**
      * @inheritdoc
      *
-     * @return string The password
-     */
-    public function getPassword()
-    {
-        return $this->get('password');
-    }
-
-    /**
-     * @inheritdoc
-     *
      * @return string|null The salt
      */
     public function getSalt()
@@ -425,7 +425,6 @@ class User extends FlexibleEntity implements UserInterface
             $id
         ) = $data;
 
-        $this->setPassword($password);
         $this->setSalt($salt);
         $this->setUsernameCanonical($usernameCanonical);
         $this->setUsername($username);
@@ -434,8 +433,11 @@ class User extends FlexibleEntity implements UserInterface
     }
 
     public function serialize() {
+        if (!$this->has('id')) {
+            throw new \Exception("Cannot serialize a user without an Id");
+        }
         return serialize(array(
-            $this->getPassword(),
+            $this->has('password') ? $this->getPassword() : '',
             $this->getSalt(),
             $this->getUsernameCanonical(),
             $this->getUsername(),

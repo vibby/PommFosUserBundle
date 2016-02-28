@@ -34,13 +34,4 @@ class UserModel extends Model
         $this->structure = new UserStructure;
         $this->flexible_entity_class = '\Vibby\PommProjectFosUserBundle\Model\User';
     }
-
-    public function fillRequiredFields(User $user)
-    {
-        if (!$user->hasLastname() || !$user->getLastname()) {
-            $user->setLastname($user->getUsername());
-        }
-
-        return $user;
-    }
 }
