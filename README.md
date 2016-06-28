@@ -8,7 +8,7 @@ This bundle permit to use FosUserBundle with Pomm easily.
 
 With composer :
 ```
-composer require vibby/pomm-project-fos-user-bundle ~2.0
+composer require vibby/pomm-project-fos-user-bundle dev-master
 ```
 
 You can execute [SQL script](src/lib/Resources/database/tables.sql) to create table.
