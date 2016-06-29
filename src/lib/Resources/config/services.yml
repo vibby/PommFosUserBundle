@@ -4,7 +4,7 @@ parameters:
 
 services:
     pomm_fos_user_bundle.user_model:
-        class: %pomm_fos_user.user_model_class%
+        class: "%pomm_fos_user.user_model_class%"
     pomm_fos_user_bundle.user_manager:
         class: Vibby\PommProjectFosUserBundle\Manager\UserManager
         arguments:
@@ -16,5 +16,5 @@ services:
         class: Vibby\PommProjectFosUserBundle\Manager\UserModelManager
         arguments:
             - "@pomm"
-            - %pomm_fos_user.connection_name%
-            - %pomm_fos_user.user_model_class%
+            - "%pomm_fos_user.connection_name%"
+            - "%pomm_fos_user.user_model_class%"
