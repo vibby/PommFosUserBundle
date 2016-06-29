@@ -258,7 +258,7 @@ class User extends FlexibleEntity implements UserInterface
     public function hasRole($role = null)
     {
         try {
-            return array_search($role, $this->get('roles'));
+            return array_search($role, $this->get('roles')) !== null;
         } catch (\Exception $e) {
             return false;
         }
@@ -302,7 +302,7 @@ class User extends FlexibleEntity implements UserInterface
     public function removeRole($role)
     {
         if ($this->hasRole($role)) {
-            $this->set('roles', array_values(array_diff($this-get('roles'),[$role])));
+            $this->set('roles', array_values(array_diff($this->get('roles'),[$role])));
         }
     }
 
@@ -444,5 +444,26 @@ class User extends FlexibleEntity implements UserInterface
             $this->isEnabled(),
             $this->getId(),
         ));
+    }
+
+    /**
+     * fillHasMethods
+     *
+     * When getIterator is called the first time, the list of "has" methods is
+     * set in a static attribute to boost performances.
+     *
+     * @access  protected
+     * @param   FlexibleEntity   $entity
+     * @return  null
+     */
+    protected static function fillHasMethods(FlexibleEntity $entity)
+    {
+        parent::fillHasMethods($entity);
+        static::$has_methods = array_filter(
+            static::$has_methods,
+            function ($e) {
+                return $e !== 'Role';
+            }
+        );
     }
 }
