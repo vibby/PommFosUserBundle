@@ -11,6 +11,7 @@ use Vibby\PommProjectFosUserBundle\Entity\UserEntity;
 use PommProject\Foundation\Inflector;
 use PommProject\Foundation\Where;
 use Vibby\PommProjectFosUserBundle\Model\User;
+use Vibby\PommProjectFosUserBundle\Manager\UserModelManager;
 
 /**
  * Description of UserManager
@@ -26,17 +27,8 @@ class UserManager extends BaseUserManager
      */
     protected $pommModel;
 
-    public function __construct(
-            EncoderFactoryInterface $encoderFactory,
-            CanonicalizerInterface $usernameCanonicalizer,
-            CanonicalizerInterface $emailCanonicalizer,
-            $pommModelManager
-    ) {
-        parent::__construct(
-            $encoderFactory,
-            $usernameCanonicalizer,
-            $emailCanonicalizer
-        );
+    public function setPommModel(UserModelManager $pommModelManager)
+    {
         $this->pommModel = $pommModelManager->getModel();
     }
 
