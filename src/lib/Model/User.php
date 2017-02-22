@@ -21,11 +21,12 @@ use FOS\UserBundle\Model\UserInterface;
 class User extends FlexibleEntity implements UserInterface
 {
     protected $plainPassword;
+    public $keyForId = 'id';
 
     public function __construct(array $values = null)
     {
         parent::__construct($values);
-        if (!$this->has('id')) {
+        if (!$this->has($this->keyForId)) {
             $this->set('salt', base_convert(sha1(uniqid(mt_rand(), true)), 16, 36));
             $this->setRoles(['ROLE_ACCOUNT']);
         }
@@ -38,7 +39,7 @@ class User extends FlexibleEntity implements UserInterface
      */
     public function getId()
     {
-        return $this->get('id');
+        return $this->has($this->keyForId) ? $this->get($this->keyForId) : $this->get('id');
     }
 
     /**
@@ -429,11 +430,11 @@ class User extends FlexibleEntity implements UserInterface
         $this->setUsernameCanonical($usernameCanonical);
         $this->setUsername($username);
         $this->setEnabled($enabled);
-        $this->setId($id);;
+        $this->set($this->keyForId, $id);;
     }
 
     public function serialize() {
-        if (!$this->has('id')) {
+        if (!$this->has($this->keyForId)) {
             throw new \Exception("Cannot serialize a user without an Id");
         }
         return serialize(array(

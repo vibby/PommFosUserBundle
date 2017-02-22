@@ -34,4 +34,9 @@ class UserModel extends Model
         $this->structure = new UserStructure;
         $this->flexible_entity_class = '\Vibby\PommProjectFosUserBundle\Model\User';
     }
+
+    public function findUserWhere(Where $where) {
+        return parent::findUserWhere($where);
+    }
 }
+

@@ -6,7 +6,6 @@ use FOS\UserBundle\Model\UserManager as BaseUserManager;
 use FOS\UserBundle\Model\UserInterface;
 use Vibby\PommProjectFosUserBundle\Exception\Exception;
 use FOS\UserBundle\Util\CanonicalizerInterface;
-use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Vibby\PommProjectFosUserBundle\Entity\UserEntity;
 use PommProject\Foundation\Inflector;
 use PommProject\Foundation\Where;
@@ -60,7 +59,7 @@ class UserManager extends BaseUserManager
     public function findUserBy(array $criteria)
     {
         $where = $this->createWhereByCriteria($criteria);
-        $result = $this->pommModel->findWhere($where);
+        $result = $this->pommModel->findUserWhere($where);
         if ($result->count() > 0) {
             return $result->current();
         }
@@ -89,10 +88,10 @@ class UserManager extends BaseUserManager
     {
         if ($this->user) {
             $user->setPassword($this->user->getPassword());
-            $user->setId($this->user->get('id'));
+            $user->setId($this->user->get($this->pommModel->keyForId));
             $this->updateCanonicalFields($user);
         }
-        if ($user->has('id')) {
+        if ($user->has($this->pommModel->keyForId)) {
             $result = $this->pommModel->updateOne($user, ['salt', 'password', 'username_canonical', 'email_canonical']);
         } else {
             $this->updateCanonicalFields($user);
@@ -114,9 +113,12 @@ class UserManager extends BaseUserManager
         return $values;
     }
 
-    protected function createWhereByCriteria($criteria = array()) {
+    protected function createWhereByCriteria(array $criteria = array()) {
         $where = new Where();
         foreach($criteria as $colname => $value) {
+            if ($colname == 'id') {
+                $colname = $this->pommModel->keyForId;
+            }
             $colname = Inflector::underscore($colname);
             $element = sprintf('%s = $*', $colname);
             $subWhere = new Where($element, array($value));

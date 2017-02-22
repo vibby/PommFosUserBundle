@@ -22,7 +22,7 @@ use PommProject\ModelManager\Model\RowStructure;
  *
  * @see RowStructure
  */
-class User extends RowStructure
+class UserStructure extends RowStructure
 {
     /**
      * __construct
