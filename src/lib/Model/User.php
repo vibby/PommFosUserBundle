@@ -229,7 +229,8 @@ class User extends FlexibleEntity implements UserInterface
      */
     public function isPasswordRequestNonExpired($ttl)
     {
-        return true;
+        return $this->get('password_requested_at') instanceof \DateTime &&
+               $this->get('password_requested_at')->getTimestamp() + $ttl > time();
     }
 
     /**

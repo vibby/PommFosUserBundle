@@ -22,6 +22,8 @@ class UserModel extends Model
 {
     use WriteQueries;
 
+    public $keyForId = 'id';
+
     /**
      * __construct()
      *
@@ -35,8 +37,9 @@ class UserModel extends Model
         $this->flexible_entity_class = '\Vibby\PommProjectFosUserBundle\Model\User';
     }
 
-    public function findUserWhere(Where $where) {
-        return parent::findUserWhere($where);
+    public function findUserWhere(Where $where)
+    {
+        return $this->findWhere($where);
     }
 }
 
