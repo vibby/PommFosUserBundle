@@ -259,11 +259,7 @@ class User extends FlexibleEntity implements UserInterface
      */
     public function hasRole($role = null)
     {
-        try {
-            return array_search($role, $this->get('roles')) !== null;
-        } catch (\Exception $e) {
-            return false;
-        }
+        return in_array($role, $this->get('roles'), true) === true;
     }
 
     /**
