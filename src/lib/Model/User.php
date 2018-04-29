@@ -4,6 +4,8 @@ namespace Vibby\PommProjectFosUserBundle\Model;
 
 use PommProject\ModelManager\Model\FlexibleEntity;
 use FOS\UserBundle\Model\UserInterface;
+use Symfony\Component\Security\Core\User\UserInterface as SfUserInterface;
+use Symfony\Component\Security\Core\User\EquatableInterface;
 
 /**
  * User
@@ -18,7 +20,7 @@ use FOS\UserBundle\Model\UserInterface;
  *
  * @see FlexibleEntity
  */
-class User extends FlexibleEntity implements UserInterface
+class User extends FlexibleEntity implements UserInterface, EquatableInterface
 {
     protected $plainPassword;
     public $keyForId = 'id';
@@ -463,5 +465,18 @@ class User extends FlexibleEntity implements UserInterface
                 return $e !== 'Role';
             }
         );
+    }
+
+    public function isEqualTo(SfUserInterface $user)
+    {
+        if ($this->salt !== $user->getSalt()) {
+            return false;
+        }
+
+        if ($this->username !== $user->getUsername()) {
+            return false;
+        }
+
+        return true;
     }
 }

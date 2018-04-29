@@ -36,6 +36,7 @@ class UserManager extends BaseUserManager
         $user = $this->pommModel->createEntity();
         $user->setEmail(null);
         $user->setUsername(null);
+
         return $user;
     }
 
